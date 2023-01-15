@@ -4,9 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -18,7 +16,7 @@ type User struct {
 }
 
 var (
-	ctxB = context.WithTimeout(context.)
+	ctx = context.Background()
 )
 
 func cancelError(e error) {
@@ -28,22 +26,31 @@ func cancelError(e error) {
 }
 
 func insertData(col *mongo.Collection, user User) (*mongo.InsertOneResult, error) {
-	res, err := col.InsertOne(ctxB, user)
+	res, err := col.InsertOne(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("error insert", err)
+	}
+	return res, nil
 }
 
 func main() {
 	fmt.Println("start")
-	// ctx, cancel := context.WithTimeout(ctxB, 2*time.Second)
-	// defer cancel()
-	client, err := mongo.Connect(ctxB, options.Client().ApplyURI("mongodb://localhost:27017"))
-	defer cancelError(err)
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
+	cancelError(err)
+
 	db := client.Database("tronics").Collection("products")
 
-	update := bson.M{"product_name": "Iphone33"}
+	// update := bson.M{"product_name": "Iphone33"}
+	us := User{
+		FirstName: "BORAT",
+		LastName:  "ACUMVA",
+	}
+	res, err := insertData(db, us)
+	cancelError(err)
 
-	ok, err := db.DeleteOne(ctx, update)
 
-	log.Println(ok)
+	
+	log.Println(res)
 
 	//end
 	fmt.Println("end")
