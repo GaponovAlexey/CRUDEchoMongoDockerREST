@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"mongo/db/dbface"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -25,33 +25,27 @@ func cancelError(e error) {
 	}
 }
 
-func insertData(col *mongo.Collection, user User) (*mongo.InsertOneResult, error) {
+func insertData(col dbface.CollectionAPI, user User) (*mongo.InsertOneResult, error) {
 	res, err := col.InsertOne(ctx, user)
 	if err != nil {
-		return nil, fmt.Errorf("error insert", err)
+		return nil, err
 	}
 	return res, nil
 }
 
 func main() {
-	fmt.Println("start")
+
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	cancelError(err)
 
 	db := client.Database("tronics").Collection("products")
 
-	// update := bson.M{"product_name": "Iphone33"}
 	us := User{
 		FirstName: "BORAT",
-		LastName:  "ACUMVA",
+		LastName:  "BARBARA",
 	}
 	res, err := insertData(db, us)
 	cancelError(err)
 
-
-	
 	log.Println(res)
-
-	//end
-	fmt.Println("end")
 }
