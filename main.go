@@ -1,51 +1,22 @@
 package main
 
 import (
-	"context"
-	"log"
-	"mongo/db/dbface"
+	"net/http"
 
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"github.com/labstack/echo/v4"
 
 )
-
-type User struct {
-	FirstName string `bson:"first_name"`
-	LastName  string `bson:"last_name"`
-}
 
 var (
-	ctx = context.Background()
+	e = echo.New()
 )
-
-func cancelError(e error) {
-	if e != nil {
-		log.Println(e)
-	}
-}
-
-func insertData(col dbface.CollectionAPI, user User) (*mongo.InsertOneResult, error) {
-	res, err := col.InsertOne(ctx, user)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
-}
 
 func main() {
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
-	cancelError(err)
+	e.GET("/", createProduct)
+	e.Logger.Fatal(e.Start(":3000"))
+}
 
-	db := client.Database("tronics").Collection("products")
-
-	us := User{
-		FirstName: "BORAT",
-		LastName:  "BARBARA",
-	}
-	res, err := insertData(db, us)
-	cancelError(err)
-
-	log.Println(res)
+func createProduct(e echo.Context) error {
+	return e.JSON(http.StatusOK, "you")
 }
