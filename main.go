@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"mongo/db/config"
-	"net/http"
+	"mongo/db/handlers"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/labstack/echo/v4"
@@ -45,12 +45,8 @@ func main() {
 
 	e := echo.New()
 
-	e.GET("/", createProduct)
+	e.GET("/", handlers.CreateProducts)
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)))
 	log.Println("end")
-}
-
-func createProduct(e echo.Context) error {
-	return e.JSON(http.StatusOK, "you")
 }
