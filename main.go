@@ -41,12 +41,13 @@ func init() {
 
 func main() {
 
-	log.Println("start - >>", cfg.DBPort)
-
 	e := echo.New()
+	h := handlers.ProductHandler{
+		Col: col,
+	}
 
-	e.GET("/", handlers.CreateProducts)
+	e.POST("/", h.CreateProducts)
 
+	//end
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)))
-	log.Println("end")
 }
