@@ -8,6 +8,7 @@ import (
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/net/context"
@@ -42,11 +43,12 @@ func init() {
 func main() {
 
 	e := echo.New()
+	e.Pre(middleware.RemoveTrailingSlash())
 	h := handlers.ProductHandler{
 		Col: col,
 	}
 
-	e.POST("/", h.CreateProducts)
+	e.POST("/", h.CreateProducts, middleware.BodyLimit("1M"))
 
 	//end
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)))

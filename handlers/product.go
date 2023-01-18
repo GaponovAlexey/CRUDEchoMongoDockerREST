@@ -6,9 +6,14 @@ import (
 	"mongo/db/dbface"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
+)
+
+var (
+	v = validator.New()
 )
 
 type Product struct {
@@ -27,15 +32,28 @@ type ProductHandler struct {
 	Col dbface.Collection
 }
 
+type ProductValidator struct {
+	validator *validator.Validate
+}
+
+func(p *ProductValidator) Validate(i interface{})error {
+	return p.validator.Struct(i)
+}
+
 func insertProduct(ctx context.Context, products []Product, collection dbface.Collection) ([]interface{}, error) {
+
 	var insertIds []interface{}
+
 	for _, product := range products {
+
 		product.ID = primitive.NewObjectID()
+
 		insertId, err := collection.InsertOne(ctx, product)
 		if err != nil {
 			log.Fatalf("inserOne error ->%s", err)
 			return nil, err
 		}
+
 		insertIds = append(insertIds, insertId.InsertedID)
 
 	}
@@ -47,10 +65,21 @@ func (h *ProductHandler) CreateProducts(c echo.Context) error {
 
 	var products []Product
 
+	c.Echo().Validator = &ProductValidator{validator: v}
+
 	if err := c.Bind(&products); err != nil {
 		return err
 	}
+	for _, product := range products {
+		err := c.Validate(product)
+		if err != nil {
+			log.Fatal("Unable to validate the product <---", err)
+			return err
+		}
+
+	}
 	Ids, err := insertProduct(context.Background(), products, h.Col)
+
 	if err != nil {
 		return err
 	}
