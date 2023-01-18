@@ -27,7 +27,7 @@ type ProductHandler struct {
 	Col dbface.Collection
 }
 
-func createProduct(ctx context.Context, products []Product, collection dbface.Collection) ([]interface{}, error) {
+func insertProduct(ctx context.Context, products []Product, collection dbface.Collection) ([]interface{}, error) {
 	var insertIds []interface{}
 	for _, product := range products {
 		product.ID = primitive.NewObjectID()
@@ -50,7 +50,7 @@ func (h *ProductHandler) CreateProducts(c echo.Context) error {
 	if err := c.Bind(&products); err != nil {
 		return err
 	}
-	Ids, err := createProduct(context.Background(), products, h.Col)
+	Ids, err := insertProduct(context.Background(), products, h.Col)
 	if err != nil {
 		return err
 	}
