@@ -9,10 +9,15 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/random"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/net/context"
 
+)
+
+const (
+	correlationID = "X-Correlation-ID"
 )
 
 var (
@@ -40,10 +45,28 @@ func init() {
 	col = db.Collection(cfg.CollectionName)
 }
 
+func addCorelationID(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Request().Header.Get(correlationID)
+		var newId string
+		if id == "" {
+			newId = random.String(12)
+		} else {
+			newId = id
+		}
+
+		c.Request().Header.Set(correlationID, newId)
+		c.Response().Header().Set(correlationID, newId)
+		return next(c)
+	}
+}
+
 func main() {
 
 	e := echo.New()
 	e.Pre(middleware.RemoveTrailingSlash())
+	e.Pre(addCorelationID)
+
 	h := handlers.ProductHandler{
 		Col: col,
 	}
