@@ -41,7 +41,7 @@ type ProductValidator struct {
 func (p *ProductValidator) Validate(i interface{}) error {
 	return p.validator.Struct(i)
 }
-
+// create mongo DB
 func insertProduct(ctx context.Context, products []Product, collection dbface.Collection) ([]interface{}, error) {
 
 	var insertIds []interface{}
@@ -62,7 +62,7 @@ func insertProduct(ctx context.Context, products []Product, collection dbface.Co
 	return insertIds, nil
 }
 
-// create mongo DB
+
 func (h *ProductHandler) CreateProducts(c echo.Context) error {
 
 	var products []Product
@@ -88,6 +88,8 @@ func (h *ProductHandler) CreateProducts(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, Ids)
 }
+
+//get
 func findProducts(ctx context.Context, collection dbface.Collection) ([]Product, error) {
 	var product []Product
 	cursor, err := collection.Find(ctx, bson.M{})
