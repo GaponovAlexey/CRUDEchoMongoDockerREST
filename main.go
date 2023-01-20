@@ -43,7 +43,6 @@ func init() {
 	cancel(err)
 	db = c.Database(cfg.DBName)
 	col = db.Collection(cfg.CollectionName)
-
 }
 
 // middleware
@@ -74,9 +73,9 @@ func main() {
 	}
 
 	e.POST("/", h.CreateProducts, middleware.BodyLimit("1M"))
-	e.GET("/", h.GetProduct)
-	e.GET("/", h.GetProductID)
-	e.PUT("/", h.PutProduct)
+	e.GET("/prod", h.GetProduct)
+	e.GET("/prod", h.GetProductID)
+	e.PUT("/prod/:id", h.PutProduct)
 	//end
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)))
 }
