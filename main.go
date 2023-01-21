@@ -73,9 +73,9 @@ func main() {
 	}
 
 	e.POST("/", h.CreateProducts, middleware.BodyLimit("1M"))
-	e.GET("/prod", h.GetProduct)
-	e.GET("/prod", h.GetProductID)
-	e.PUT("/prod/:id", h.PutProduct)
+	e.GET("/", h.GetProduct)
+	e.GET("/", h.GetProductID)
+	e.PUT("/:id", h.PutProduct)
 	//end
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)))
 }
