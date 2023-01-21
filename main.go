@@ -67,15 +67,17 @@ func main() {
 	e.Logger.SetLevel(log.ERROR)
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Pre(addCorelationID)
+	fmt.Println("random string", random.String(3))
 
 	h := handlers.ProductHandler{
 		Col: col,
 	}
 
-	e.POST("/", h.CreateProducts, middleware.BodyLimit("1M"))
 	e.GET("/", h.GetProduct)
 	e.GET("/", h.GetProductID)
+	e.POST("/", h.CreateProducts, middleware.BodyLimit("1M"))
 	e.PUT("/:id", h.PutProduct)
+	e.DELETE("/:id", h.DeleteProduct)
 	//end
 	e.Logger.Fatal(e.Start(fmt.Sprintf("%s:%s", cfg.Host, cfg.Port)))
 }
