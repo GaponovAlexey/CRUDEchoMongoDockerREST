@@ -14,11 +14,6 @@ import (
 
 )
 
-var (
-	ctx = context.Background()
-	// ctx context.Context
-)
-
 func modifyProduct(ctx context.Context, id string, reqBody io.ReadCloser, col dbface.Collection) (Product, error) {
 
 	var product Product

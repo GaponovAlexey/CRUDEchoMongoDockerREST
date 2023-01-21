@@ -1,12 +1,16 @@
 package handlers
 
 import (
+	"context"
 	"mongo/db/dbface"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 )
-
+var (
+	ctx = context.Background()
+	// ctx context.Context
+)
 
 
 type Product struct {

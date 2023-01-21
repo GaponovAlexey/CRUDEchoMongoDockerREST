@@ -14,7 +14,9 @@ import (
 // get
 func findProducts(ctx context.Context, collection dbface.Collection) ([]Product, error) {
 	var product []Product
+	
 	cursor, err := collection.Find(ctx, bson.M{})
+
 	if err != nil {
 		fmt.Errorf("find Product Error")
 		return nil, err
