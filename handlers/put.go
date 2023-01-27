@@ -40,7 +40,8 @@ func modifyProduct(ctx context.Context, id string, reqBody io.ReadCloser, col db
 
 }
 
-// updateProduct
+
+// POST
 func (h *ProductHandler) PutProduct(c echo.Context) error {
 	id := c.Param("id")
 
