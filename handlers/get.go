@@ -11,7 +11,7 @@ import (
 
 )
 
-// get
+// GET
 func findProducts(ctx context.Context, collection dbface.Collection) ([]Product, error) {
 	var product []Product
 	
