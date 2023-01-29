@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 )
-
+// GET/ID
 func (h *ProductHandler) GetId(c echo.Context) error {
 	var prod Product
 	docId, err := primitive.ObjectIDFromHex(c.Param("id"))
